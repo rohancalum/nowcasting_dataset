@@ -16,6 +16,7 @@ import torch
 
 from nowcasting_dataset.cloud.gcp import gcp_download_to_local
 from nowcasting_dataset.cloud.aws import aws_download_to_local
+from nowcasting_dataset.flip import flip
 
 from nowcasting_dataset.data_sources.satellite_data_source import SAT_VARIABLE_NAMES
 
@@ -44,19 +45,21 @@ class NetCDFDataset(torch.utils.data.Dataset):
     """
 
     def __init__(
-            self, n_batches: int, src_path: str, tmp_path: str, cloud: str = 'gcp'):
+            self, n_batches: int, src_path: str, tmp_path: str, cloud: str = 'gcp', random_flips: bool = True):
         """
         Args:
-          n_batches: Number of batches available on disk.
-          src_path: The full path (including 'gs://') to the data on
+        n_batches: Number of batches available on disk.
+        src_path: The full path (including 'gs://') to the data on
             Google Cloud storage.
-          tmp_path: The full path to the local temporary directory
+        tmp_path: The full path to the local temporary directory
             (on a local filesystem).
+        random_flips: if to random flip the satellite/nwp data vertically and or randomly
         """
         self.n_batches = n_batches
         self.src_path = src_path
         self.tmp_path = tmp_path
         self.cloud = cloud
+        self.random_flips = random_flips
 
         # setup cloud connections as None
         self.gcs = None
@@ -130,6 +133,9 @@ class NetCDFDataset(torch.utils.data.Dataset):
             batch['sat_data'] = sat_data
 
         batch = example.to_numpy(batch)
+
+        # flip satellite / nwp data
+        batch = flip(batch)
 
         return batch
 
