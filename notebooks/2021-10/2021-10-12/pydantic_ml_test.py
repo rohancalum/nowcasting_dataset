@@ -99,6 +99,10 @@ class FakeDataset(torch.utils.data.Dataset):
             ),
         )
 
+        if torch.cuda.is_available():
+            nwp.image_data = nwp.image_data.cuda()
+            sat.image_data = nwp.image_data.cuda()
+
         # Note need to return as nested dict
         if self.return_pure_dict:
             return {
