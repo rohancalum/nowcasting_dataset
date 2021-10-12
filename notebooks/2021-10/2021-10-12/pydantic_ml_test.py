@@ -50,7 +50,7 @@ class Batch(BaseModel):
 class FakeDataset(torch.utils.data.Dataset):
     """Fake dataset."""
 
-    def __init__(self, length: int = 10, return_pure_dict: bool = True):
+    def __init__(self, length: int = 100, return_pure_dict: bool = True):
 
         self.length = length
         self.return_pure_dict = return_pure_dict
@@ -110,14 +110,15 @@ class FakeDataset(torch.utils.data.Dataset):
             return Batch(satellite=sat, batch_size=self.batch_size, nwp=nwp).dict()
 
 
-N = 10
+N = 50
 # ***************
 # test 1
 # ***************
 print("Pydantic")
 dataloader = iter(FakeDataset(return_pure_dict=False))
+x = next(dataloader)
 
-times = []
+times_pydantic = []
 i = 0
 while i < N:
     t = time.time()
@@ -127,18 +128,22 @@ while i < N:
     print(t_seconds)
 
     i = i + 1
-    times.append(t_seconds)
+    times_pydantic.append(t_seconds)
 
-average_pydantic = np.mean(times)
+average_pydantic = np.mean(times_pydantic)
+std_pydantic = np.std(times_pydantic)
 
 
 # ***************
 # test 2
 # ***************
 print("Dict")
-dataloader = iter(FakeDataset(return_pure_dict=False))
+dataloader = iter(FakeDataset(return_pure_dict=True))
 
-times = []
+# from torch.utils.data import DataLoader
+# dataloader = iter(DataLoader(FakeDataset(return_pure_dict=False), batch_size=None))
+
+times_dict = []
 i = 0
 while i < N:
     t = time.time()
@@ -147,13 +152,65 @@ while i < N:
     print(t_seconds)
 
     i = i + 1
-    times.append(t_seconds)
+    times_dict.append(t_seconds)
 
-average_dict = np.mean(times)
+average_dict = np.mean(times_dict)
+std_dic = np.std(times_dict)
 
 print("average")
-print("pydantic")
-print(average_pydantic)
+print(f"Pydantic {average_pydantic}")
+print(f"Dict {average_dict}")
 
-print("Dict")
-print(average_dict)
+
+# *************
+# t test
+# ********
+# is pydantic slower than
+# https://machinelearningmastery.com/how-to-code-the-students-t-test-from-scratch-in-python/
+
+from scipy.stats import t
+
+data1 = times_pydantic
+data2 = times_dict
+alpha = 0.05
+
+# calculate means
+mean1, mean2 = np.mean(data1), np.mean(data2)
+
+# calculate sample standard deviations
+std1, std2 = np.std(data1, ddof=1), np.std(data2, ddof=1)
+
+# calculate standard errors
+n1, n2 = len(data1), len(data2)
+se1, se2 = std1 / np.sqrt(n1), std2 / np.sqrt(n2)
+
+# standard error on the difference between the samples
+sed = np.sqrt(se1 ** 2.0 + se2 ** 2.0)
+
+# calculate the t statistic
+t_stat = (mean1 - mean2) / sed
+# degrees of freedom
+df = len(data1) + len(data2) - 2
+# calculate the critical value
+cv = t.ppf(1.0 - alpha, df)
+# calculate the p-value
+p = (1.0 - t.cdf(abs(t_stat), df)) * 2.0
+# return everything
+print(t_stat, df, cv, p)
+
+if p > alpha:
+    print("Accept null hypothesis that the means are equal.")
+else:
+    print("Reject the null hypothesis that the means are equal.")
+    print(f"Pydantic {average_pydantic}")
+    print(f"Dict {average_dict}")
+
+
+# *************
+# results
+# ********
+# on GPU,  over 50 times,
+# pydantic: 25663522243499753
+# Dict: 0.2568572759628296
+
+# std
