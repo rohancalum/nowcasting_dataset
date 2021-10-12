@@ -129,8 +129,7 @@ while i < N:
     i = i + 1
     times.append(t_seconds)
 
-print("average")
-print(np.mean(times))
+average_pydantic = np.mean(times)
 
 
 # ***************
@@ -150,5 +149,11 @@ while i < N:
     i = i + 1
     times.append(t_seconds)
 
+average_dict = np.mean(times)
+
 print("average")
-print(np.mean(times))
+print("pydantic")
+print(average_pydantic)
+
+print("Dict")
+print(average_dict)
