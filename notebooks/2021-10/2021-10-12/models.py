@@ -122,6 +122,8 @@ class Example(BaseModel):
     """A single machine learning training example."""
 
     satellite: Optional[Satellite]
+    nwp
+    metadata
 
 
 sat_1 = Satellite(data=create_image_array())
