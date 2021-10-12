@@ -88,7 +88,7 @@ class PV(DataSourceOutput):
                 batch_size,
                 seq_length_5,
                 n_pv_systems_per_batch,
-            ),
+            ).astype(np.float32),
             pv_system_id=np.sort(np.random.randint(0, 10000, (batch_size, n_pv_systems_per_batch))),
             pv_system_row_number=np.sort(
                 np.random.randint(0, 1000, (batch_size, n_pv_systems_per_batch))

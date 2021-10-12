@@ -88,6 +88,7 @@ class Satellite(DataSourceOutput):
                 SAT_VARIABLE_NAMES[0:number_sat_channels] for _ in range(batch_size)
             ],
         )
+        s.sat_data = s.sat_data.astype(np.float32)
 
         return s
 

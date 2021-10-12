@@ -97,7 +97,7 @@ class NWP(DataSourceOutput):
                 seq_length_5,
                 nwp_image_size_pixels,
                 nwp_image_size_pixels,
-            ),
+            ).astype(np.float32),
             nwp_x_coords=np.sort(np.random.randn(batch_size, nwp_image_size_pixels)),
             nwp_y_coords=np.sort(np.random.randn(batch_size, nwp_image_size_pixels))[
                 :, ::-1

@@ -98,7 +98,7 @@ class GSP(DataSourceOutput):
                 batch_size,
                 seq_length_30,
                 n_gsp_per_batch,
-            ),
+            ).astype(np.float32),
             gsp_id=np.sort(np.random.randint(0, 340, (batch_size, n_gsp_per_batch))),
             gsp_datetime_index=time_30,
             gsp_x_coords=np.sort(np.random.randn(batch_size, n_gsp_per_batch)),
