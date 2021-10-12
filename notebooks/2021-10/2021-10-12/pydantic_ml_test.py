@@ -127,7 +127,7 @@ i = 0
 while i < N:
     t = time.time()
     x = next(dataloader)
-    x = Batch(**x)
+    x = Batch.construct(_fields_set=Batch.__fields_set__, **x)
     t_seconds = time.time() - t
     print(t_seconds)
 
@@ -209,12 +209,16 @@ else:
     print(f"Pydantic {average_pydantic}")
     print(f"Dict {average_dict}")
 
+    print(
+        f"% diff {(average_pydantic - average_dict)/ ((average_pydantic + average_dict)/2) * 100}"
+    )
+
 
 # *************
 # results
 # ********
-# on GPU,  over 50 times,
-# pydantic: 25663522243499753
-# Dict: 0.2568572759628296
+# on GPU,
 
-# std
+# Ran this 10 times, add
+# means the same:
+# means are different:
