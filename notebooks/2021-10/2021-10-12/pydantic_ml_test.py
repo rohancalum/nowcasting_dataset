@@ -220,5 +220,8 @@ else:
 # on GPU,
 
 # Ran this 10 times, add
-# means the same:
-# means are different:
+# means the same: 3
+# pydantic faster: 0
+# dict faster: 7
+#
+# dict seems to be faster by about 0.1%
