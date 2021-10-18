@@ -75,7 +75,6 @@ class SatelliteDataSource(ZarrDataSource):
     channels: Optional[Iterable[str]] = SAT_VARIABLE_NAMES
     image_size_pixels: InitVar[int] = 128
     meters_per_pixel: InitVar[int] = 2_000
-    normalise: bool = True
 
     def __post_init__(self, image_size_pixels: int, meters_per_pixel: int):
         """ Post Init """
@@ -168,14 +167,6 @@ class SatelliteDataSource(ZarrDataSource):
             data = data.load()
             self._cache[t0_dt] = data
             return data
-
-    def _post_process_example(
-        self, selected_data: xr.DataArray, t0_dt: pd.Timestamp
-    ) -> xr.DataArray:
-        if self.normalise:
-            selected_data = selected_data - SAT_MEAN
-            selected_data = selected_data / SAT_STD
-        return selected_data
 
     def datetime_index(self, remove_night: bool = True) -> pd.DatetimeIndex:
         """Returns a complete list of all available datetimes

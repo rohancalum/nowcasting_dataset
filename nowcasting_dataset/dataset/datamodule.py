@@ -119,7 +119,6 @@ class NowcastingDataModule(pl.LightningDataModule):
             channels=self.sat_channels,
             n_timesteps_per_batch=n_timesteps_per_batch,
             convert_to_numpy=self.convert_to_numpy,
-            normalise=self.normalise_sat,
         )
 
         self.data_sources = [self.sat_data_source]
