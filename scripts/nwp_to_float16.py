@@ -39,7 +39,7 @@ def one_file(local_file):
 
     nwp_data_raw = xr.load_dataset(filename_or_obj=local_file)
 
-    nwp_data_raw.values = nwp_data_raw.values.astype(np.float16)
+    nwp_data_raw.data.values = nwp_data_raw.data.values.astype(np.float16)
 
     encoding = {name: {"compression": "lzf"} for name in nwp_data_raw.data_vars}
     nwp_data_raw.to_netcdf(local_file, engine="h5netcdf", mode="w", encoding=encoding)
