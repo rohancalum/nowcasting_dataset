@@ -35,6 +35,8 @@ def one_file(local_file):
     """Change one nwp file to float 16"""
     # can use this index, only to copy files after a certain number
 
+    print(local_file)
+
     nwp_data_raw = xr.load_dataset(filename_or_obj=local_file)
 
     nwp_data_raw.values = nwp_data_raw.values.astype(np.float16)
