@@ -46,7 +46,7 @@ def one_file(local_file):
 
 
 # test to see if it works
-one_file(list(all_filenames.keys())[0], all_filenames[list(all_filenames.keys())[0]])
+one_file(all_filenames[0])
 
 # loop over files
 with futures.ThreadPoolExecutor(max_workers=2) as executor:
