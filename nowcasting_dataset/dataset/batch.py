@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake import (
     gsp_fake,
+    hrv_satellite_fake,
     metadata_fake,
     nwp_fake,
     pv_fake,
@@ -93,7 +94,7 @@ class Batch(BaseModel):
                     configuration.input_data.satellite.satellite_channels
                 ),
             ),
-            hrv_satellite=satellite_fake(
+            hrv_satellite=hrv_satellite_fake(
                 batch_size=batch_size,
                 seq_length_5=configuration.input_data.satellite.seq_length_5_minutes,
                 satellite_image_size_pixels=satellite_image_size_pixels,
